@@ -415,12 +415,12 @@ function draw(radiusNP, radiusMicelle, cantNP, espacio, zoom, xDrag, yDrag) {
         {
             n = parseInt(cantNP);
             radiusNP = ((radiusMicelle*Math.sin((Math.PI/n)))/(1-Math.sin((Math.PI/n))));
-            radiusNPOrig = Math.floor(radiusNP);
+            radiusNPOrig = Math.round(radiusNP);
         }
         else {
             //Calculando la cantidad de nanoparticulas en funcion del diametro de la micela y del diametro de las NP
             radiusNP = radiusNP+(parseFloat(espacio));
-            n = Math.floor(Math.PI/(Math.asin(radiusNP/(radiusMicelle+radiusNP))));
+            n = Math.round(Math.PI/(Math.asin(radiusNP/(radiusMicelle+radiusNP))));
         }
 
         //Coordenadas de origen de la micela
