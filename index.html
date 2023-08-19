@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<!--* Created by Carlos Maranje.-->
+<!--* User: Carlos Maranje-->
+<!--* Date: 12/13/2018-->
+<!--* Time: 9:13 PM-->
+<head>
+    <title>Drawer</title>
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="drawer.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<h1>Nanoanillos</h1>
+<div id="canvas-container">
+    <div id="scale-tooltip">
+        <div id="input-scale-value">
+            <input type="number" value="0" id="value-scale">
+        </div>
+        <div id="autoscale-micelle">
+            <label for="scale-micelle">Escalar micela</label>
+            <input type="checkbox" id="scale-micelle">
+            <input type="hidden" id="scale-equivalence" data-pixels="0" data-nm="0">
+        </div>
+        <input type="hidden" id="scale-value" value="0">
+    </div>
+    <canvas id="background-canvas" class="canvas" width="600" height="600"></canvas>
+    <canvas id="nanoanillo" class="canvas" width="600" height="600"></canvas>
+
+</div>
+<section id="controles">
+    <div id="controles-container">
+        <label for="radiusNP" class="label">Diametro de las Nanoparticulas</label>
+        <input type="number" step="1" min="1"  value="50" id="radiusNP" class="radio">
+
+        <label for="radiusMicelle" class="label">Diametro de la micela</label>
+        <input type="number" step="1" min="1" value="200" id="radiusMicelle" class="radio">
+
+        <label for="cantNP" class="label">Cantidad de Nano</label>
+        <input id="cantNP" class="range" type="range" min="3" max="100" value="2" step="1">
+
+        <label for="zoom" class="label">Zoom</label>
+        <input id="zoom" class="range" type="range" min="0.1" max="10" value="1" step="any">
+
+        <label for="espacio" class="label">Recubrimiento</label>
+        <input id="espacio" class="range" type="range" min="0" max="10" value="0" step="0.1">
+        <input type="hidden" id="lastActive" value="radiusNP">
+    </div>
+
+    <div id="display-info">
+        <table id="tabla-info" cellpadding="10">
+            <tr class="fila">
+                <td>Diametro NP</td>
+                <td id="display-radio-np"></td>
+            </tr>
+            <tr class="fila">
+                <td>Diametro micela</td>
+                <td id="display-radio-micela"></td>
+            </tr>
+            <tr class="fila">
+                <td>Cantidad NP</td>
+                <td id="display-cant"></td>
+            </tr>
+            <tr class="fila">
+                <td>Recubrimiento</td>
+                <td id="display-recubrimiento"></td>
+            </tr>
+            <tr class="fila">
+                <td>Separaci&oacute;n</td>
+                <td id="display-espacio"></td>
+            </tr>
+            <tr class="fila">
+                <td>Zoom</td>
+                <td id="display-zoom"></td>
+            </tr>
+        </table>
+
+        <div id="div-reset">
+            <button id="insertar-escala" class="tab-button float-left">Escala</button>
+            <button id="reset-coords" class="tab-button float-left">Centrar</button>
+            <button id="reset-canvas" class="tab-button float-left">Reset</button>
+        </div>
+    </div>
+    <div id="load-image">
+        <div>
+            <button id="cargar-imagen">Cargar im&aacute;gen</button>
+        </div>
+        <input type="file" id="image-file">
+    </div>
+    <div id="personalization-layer">
+
+        <div id="color-controls">
+            <div id="personalization-tabs">
+                <ul id="tabs-list">
+                    <li class="tab" data-info="np">
+                        <button class="tab-button">
+                            Nanoparticulas
+                        </button>
+                    </li>
+                    <li class="tab" data-info="micela">
+                        <button class="tab-button">
+                            Micela
+                        </button>
+                    </li>
+                    <li class="tab" data-info="otros">
+                        <button class="tab-button">
+                            Escala
+                        </button>
+                    </li>
+                    <li class="tab" data-info="otros">
+                        <button class="tab-button">
+                            Generales
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div class="personalization-content" data-content="nanoparticulas">
+                <table class="personalization-table">
+                    <tr>
+                        <td>Borde</td>
+                        <td><input type="color"></td>
+                    </tr>
+                    <tr>
+                        <td>Fondo</td>
+                        <td><input type="color"></td>
+                    </tr>
+                    <tr>
+                        <td>Color de fuente</td>
+                        <td><input type="color"></td>
+                    </tr>
+                    <tr>
+                        <td>Tamanno fuente</td>
+                        <td><input type="range" min="8" max="32" value="14"></td>
+                        <td>
+                            <input type="checkbox" id="auto-size">
+                            <label for="auto-size">Auto</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="personalization-content" data-content="nanoparticulas" style="display: none">
+                <table class="personalization-table">
+                    <tr>
+                        <td>Borde</td>
+                        <td><input type="color"></td>
+                    </tr>
+                    <tr>
+                        <td>Fondo</td>
+                        <td><input type="color"></td>
+                    </tr>
+                    <tr>
+                        <td>Color de fuente</td>
+                        <td><input type="color"></td>
+                    </tr>
+                    <tr>
+                        <td>Tamanno fuente</td>
+                        <td><input type="range" min="8" max="32" value="14"></td>
+                        <td>
+                            <input type="checkbox" id="auto-size-micelle">
+                            <label for="auto-size">Auto</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="personalization-content" data-content="nanoparticulas" style="display: none">
+                <table class="personalization-table">
+                    <tr>
+                        <td>Borde</td>
+                        <td><input type="color"></td>
+                    </tr>
+                    <tr>
+                        <td>Fondo</td>
+                        <td><input type="color"></td>
+                    </tr>
+                    <tr>
+                        <td>Color de fuente</td>
+                        <td><input type="color"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+    <input type="hidden" id="xDrag" value="0">
+    <input type="hidden" id="yDrag" value="0">
+</section>
+
+</body>
