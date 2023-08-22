@@ -36,10 +36,72 @@
 // });
 
 $(document).ready(function () {
- $(document).on('change', '.radio', function () {
+
+    var start,
+        end,
+        difference,
+        actual,
+        originalWidth
+    ;
+    var down = false;
+    var parametros = parameters();
+    draw(
+        parametros.radiusNP,
+        parametros.radiusMicelle,
+        0,
+        parametros.espacio,
+        parametros.zoom,
+        parametros.xDrag,
+        parametros.yDrag);
+
+    $(document).on('mouseup', function (e) {
+        end = e.pageX;
+        down = false;
+        $('#div-escala').css({
+            opacity:1
+        });
+
+    });
+    $(document).on('mousemove',  function (e) {
+        actual = e.pageX;
+        difference = actual - start;
+        var div = $('#div-escala');
+        if(down === true){
+            var width = originalWidth+difference;
+            div.css({
+                width: width,
+                opacity:0.5
+            });
+            tooltipPosition();
+        }
+    });
+    $(document).on('mousedown', '#div-escala-right', function (e) {
+        start = e.pageX;
+        down = true;
+        originalWidth = $('#div-escala').width();
+
+    });
+    $(document).on('mouseout', '#div-escala-right', function (e) {
+        var scaleTooltip = $('#scale-tooltip');
+        const ev = e;
+        scaleTooltip.hide();
+
+        setTimeout(function () {
+            const pageX = ev.pageX;
+            const pageY = ev.pageY;
+            const scaleLeft = parseFloat(scaleTooltip.position().left+$('#canvas-container').position().left);
+            const scaleTop = scaleTooltip.position().top;
+            const scaleWidth = parseFloat(scaleTooltip.width());
+            const scaleHeight = scaleTooltip.height();
+            if((pageX < (scaleLeft)) || (pageX > (scaleWidth+scaleLeft))){
+                if(((pageY < scaleTop) || pageY > scaleTop+scaleHeight)){
+                }
+            }
+        }, 500)
+    });
+    $(document).on('change', '.radio', function () {
      var radiusNP = $('#radiusNP').val();
      var radiusMicelle = $('#radiusMicelle').val();
-     var espacio = $('#espacio').val();
 
      clearCanvas('nanoanillo');
 
@@ -61,26 +123,10 @@ $(document).ready(function () {
      }
 
  })
-});
-$(document).ready(function () {
-    var parametros = parameters();
-    draw(
-        parametros.radiusNP,
-        parametros.radiusMicelle,
-        0,
-        parametros.espacio,
-        parametros.zoom,
-        parametros.xDrag,
-        parametros.yDrag);
-});
-$(document).ready(function () {
-    $(document).on('input', '#cantNP', function (e) {
+    $(document).on('input', '#cantNP', function () {
         var cantNP = $(this).val();
         if (cantNP >=3){
-            var radiusNP = 0;
-            var radiusMicelle = $('#radiusMicelle').val();
             clearCanvas('nanoanillo');
-            var espacio = $('#espacio').val();
 
             var parametros = parameters();
 
@@ -97,10 +143,7 @@ $(document).ready(function () {
         }
 
     })
-});
-
-$(document).ready(function () {
-    $(document).on('input', '#zoom, #espacio', function (e) {
+    $(document).on('input', '#zoom, #espacio', function () {
         clearCanvas('nanoanillo');
         var parametros = parameters();
         const func = draw(
@@ -114,17 +157,104 @@ $(document).ready(function () {
         $('#cantNP').val(func.cantidad);
 
     });
-});
-$(document).ready(function () {
-    $(document).on('change', '#image-file', function (e) {
+    $(document).on('change', '#image-file', function () {
         fileInput(this);
     });
-});
-$(document).ready(function (e) {
-    $(document).on('click', '#cargar-imagen', function (e) {
+    $(document).on('click', '#cargar-imagen', function () {
         $('#image-file').click();
     })
+    $(document).on('mouseover mousemove', '#div-escala-right', function () {
+        tooltipPosition();
+    })
+    $(document).on('keyup', '#value-scale', function () {
+        var scaleEquiv = $('#scale-equivalence');
+        scaleEquiv.attr('data-nm', $(this).val());
+        scaleEquiv.attr('data-pixels', $('#div-escala').width())
+    })
+    $(document).on('click', '#reset-coords, #reset-canvas', function () {
+        const parametros = parameters();
+        clearCanvas('nanoanillo');
+        if($(this).attr('id')==='reset-canvas'){
+            parametros.radiusMicelle = 200;
+            parametros.radiusNP = 50;
+            parametros.espacio = 0;
+            parametros.zoom = 0.98;
+
+            $('#radiusNP').val(parametros.radiusNP);
+            $('#radiusMicelle').val(parametros.radiusMicelle);
+            $('#espacio').val(parametros.espacio);
+            $('#zoom').val(parametros.zoom);
+
+        }
+        const fn = draw(
+            parametros.radiusNP,
+            parametros.radiusMicelle,
+            0,
+            parametros.espacio,
+            parametros.zoom,
+            0,
+            0
+        );
+        $('#xDrag').val(0);
+        $('#yDrag').val(0);
+        $('#cantNP').val(fn.cantidad);
+    })
+    $(document).on('click', '#insertar-escala', function () {
+        const div = $('#div-escala');
+        if(div.attr('id')==='div-escala'){
+            div.remove();
+            $('#scale-tooltip').hide();
+        }
+        else {
+            const divEscala = $(document.createElement('div'));
+            const divEscalaRight = $(document.createElement('div'));
+            const divEscalaDragger = $(document.createElement('div'));
+            const parent = $('#canvas-container');
+            divEscala.attr({
+                id:'div-escala',
+            });
+
+            divEscalaRight.attr({
+                id:'div-escala-right',
+                class:'expand-scale'
+            });
+            divEscalaDragger.attr({
+                id:'div-escala-dragger',
+                class:'expand-scale'
+            });
+            divEscala.css({
+                position:'absolute',
+                top:(parent.height()/2)-(divEscala.height()/2),
+                left:(parent.width()/2)-(divEscala.width()/2),
+            });
+
+            divEscala.append(divEscalaDragger);
+            divEscala.append(divEscalaRight);
+            parent.append(divEscala);
+        }
+        $('#set-scale-container').toggleClass('hidden')
+        $(this).toggleClass('resaltado')
+    })
+    $(document).on('click', '#set-scale-button', function (){
+        const scaleEquiv = $('#scale-equivalence');
+        scaleEquiv.attr('data-nm', $('#scale-value').val());
+        scaleEquiv.attr('data-pixels', $('#div-escala').width())
+    })
+
+    // $(document).on('change', '#scale-micelle', function (e) {
+    //     if($(this).prop('checked')===true){
+    //         var parametros = parameters();
+    //         clearCanvas('nanoanillo');
+    //         const radiusMicelle = parseInt($('#value-scale').val());
+    //
+    //         draw(parametros.radiusNP, radiusMicelle, 0, parametros.espacio, parametros.zoom, parametros.xDrag, parametros.yDrag)
+    //     }
+    //     else {
+    //         clearCanvas('nanoanillo');
+    //     }
+    // })
 });
+
 
 //Drag the canvas
 $(document).ready(function () {
@@ -135,18 +265,14 @@ $(document).ready(function () {
         xWidth,
         xHeight
     ;
-    $(document).on('mousedown', '#nanoanillo', function (e) {
-        var dragX = e.pageX;
-        var dragY = e.pageY;
+    $(document).on('mousedown', '#nanoanillo', function () {
         xTop = background.offset().top;
         xLeft = background.offset().left;
         xWidth = background.width();
         xHeight = background.height();
         isDragging = true;
     });
-    $(document).on('mouseup', function (e) {
-        var dragX = e.pageX;
-        var dragY = e.pageY;
+    $(document).on('mouseup', function () {
         isDragging = false;
         $('#nanoanillo').css({
             cursor:'default'
@@ -213,7 +339,7 @@ $(document).ready(function () {
             $('#div-escala-right').hide();
         }
     });
-    $(document).on('mouseup', function (e) {
+    $(document).on('mouseup', function () {
         isDragging = false;
 
         escala.css({
@@ -224,156 +350,7 @@ $(document).ready(function () {
 
     });
 });
-//Scale Effect
-$(document).ready(function () {
-    var start,
-        end,
-        difference,
-        actual,
-        originalWidth
-    ;
-    var down = false;
 
-    $(document).on('mousedown', '#div-escala-right', function (e) {
-        start = e.pageX;
-        down = true;
-        originalWidth = $('#div-escala').width();
-
-    });
-    $(document).on('mouseout', '#div-escala-right', function (e) {
-        var scaleTooltip = $('#scale-tooltip');
-        const ev = e;
-        // scaleTooltip.hide();
-
-        // setTimeout(function () {
-        //     const pageX = ev.pageX;
-        //     const pageY = ev.pageY;
-        //     const scaleLeft = parseFloat(scaleTooltip.position().left+$('#canvas-container').position().left);
-        //     const scaleTop = scaleTooltip.position().top;
-        //     const scaleWidth = parseFloat(scaleTooltip.width());
-        //     const scaleHeight = scaleTooltip.height();
-        //     if((pageX < (scaleLeft)) || (pageX > (scaleWidth+scaleLeft))){
-        //         if(((pageY < scaleTop) || pageY > scaleTop+scaleHeight)){
-        //         }
-        //     }
-        // }, 500)
-    });
-    $(document).on('mouseup', function (e) {
-        end = e.pageX;
-        down = false;
-        $('#div-escala').css({
-            opacity:1
-        });
-    });
-    $(document).on('mousemove',  function (e) {
-        actual = e.pageX;
-        difference = actual - start;
-        var div = $('#div-escala');
-        if(down === true){
-            var width = originalWidth+difference;
-            div.css({
-                width: width,
-                opacity:0.5
-            });
-            tooltipPosition();
-        }
-    });
-});
-//Scale tooltip
-$(document).ready(function () {
-    $(document).on('mouseover mousemove', '#div-escala-right', function (e) {
-        tooltipPosition();
-    })
-});
-$(document).ready(function () {
-    $(document).on('keyup', '#value-scale', function (e) {
-        var scaleEquiv = $('#scale-equivalence');
-        scaleEquiv.attr('data-nm', $(this).val());
-        scaleEquiv.attr('data-pixels', $('#div-escala').width())
-    })
-});
-//Reset buttons
-$(document).ready(function () {
-    $(document).on('click', '#reset-coords, #reset-canvas', function (e) {
-        const parametros = parameters();
-        clearCanvas('nanoanillo');
-        if($(this).attr('id')==='reset-canvas'){
-            parametros.radiusMicelle = 200;
-            parametros.radiusNP = 50;
-            parametros.espacio = 0;
-            parametros.zoom = 0.98;
-
-            $('#radiusNP').val(parametros.radiusNP);
-            $('#radiusMicelle').val(parametros.radiusMicelle);
-            $('#espacio').val(parametros.espacio);
-            $('#zoom').val(parametros.zoom);
-
-        }
-        const fn = draw(
-            parametros.radiusNP,
-            parametros.radiusMicelle,
-            0,
-            parametros.espacio,
-            parametros.zoom,
-            0,
-            0
-        );
-        $('#xDrag').val(0);
-        $('#yDrag').val(0);
-        $('#cantNP').val(fn.cantidad);
-    })
-});
-$(document).ready(function () {
-    $(document).on('click', '#insertar-escala', function (e) {
-        const div = $('#div-escala');
-        if(div.attr('id')==='div-escala'){
-            div.remove();
-            $('#scale-tooltip').hide();
-        }
-        else {
-            const divEscala = $(document.createElement('div'));
-            const divEscalaRight = $(document.createElement('div'));
-            const divEscalaDragger = $(document.createElement('div'));
-            const parent = $('#canvas-container');
-            divEscala.attr({
-                id:'div-escala',
-            });
-
-            divEscalaRight.attr({
-                id:'div-escala-right',
-                class:'expand-scale'
-            });
-            divEscalaDragger.attr({
-                id:'div-escala-dragger',
-                class:'expand-scale'
-            });
-            divEscala.css({
-                position:'absolute',
-                top:(parent.height()/2)-(divEscala.height()/2),
-                left:(parent.width()/2)-(divEscala.width()/2),
-            });
-
-            divEscala.append(divEscalaDragger);
-            divEscala.append(divEscalaRight);
-            parent.append(divEscala);
-        }
-        $(this).toggleClass('resaltado')
-    })
-});
-$(document).ready(function () {
-    $(document).on('change', '#scale-micelle', function (e) {
-        if($(this).prop('checked')===true){
-            var parametros = parameters();
-            clearCanvas('nanoanillo');
-            const radiusMicelle = parseInt($('#value-scale').val());
-
-            draw(parametros.radiusNP, radiusMicelle, 0, parametros.espacio, parametros.zoom, parametros.xDrag, parametros.yDrag)
-        }
-        else {
-            clearCanvas('nanoanillo');
-        }
-    })
-});
 function draw(radiusNP, radiusMicelle, cantNP, espacio, zoom, xDrag, yDrag) {
 
     //Seleccionar el canvas
@@ -386,10 +363,10 @@ function draw(radiusNP, radiusMicelle, cantNP, espacio, zoom, xDrag, yDrag) {
     var widthLienzo = lienzo.width();
     var heigthLienzo = lienzo.height();
 
-    if(!xDrag || xDrag===undefined){
+    if(!xDrag){
         xDrag = 0;
     }
-    if(!yDrag || yDrag===undefined){
+    if(!yDrag){
         yDrag = 0;
     }
     if(canvas.getContext){
@@ -404,11 +381,11 @@ function draw(radiusNP, radiusMicelle, cantNP, espacio, zoom, xDrag, yDrag) {
         var radiusNPOrig =parseFloat(radiusNP);
 
         //Parseando los diametros
-        var radiusMicelle = parseFloat(radiusMicelle);
-        var radiusNP =parseFloat(radiusNP);
+        radiusMicelle = parseFloat(radiusMicelle);
+        radiusNP =parseFloat(radiusNP);
 
         //Cantidad de NPs
-        var n;
+        let n;
 
         //Si se fija la cantidad de nanoparticulas deseadas
         if(cantNP>=3)
@@ -420,7 +397,13 @@ function draw(radiusNP, radiusMicelle, cantNP, espacio, zoom, xDrag, yDrag) {
         else {
             //Calculando la cantidad de nanoparticulas en funcion del diametro de la micela y del diametro de las NP
             radiusNP = radiusNP+(parseFloat(espacio));
-            n = Math.round(Math.PI/(Math.asin(radiusNP/(radiusMicelle+radiusNP))));
+            n = (Math.PI/(Math.asin(radiusNP/(radiusMicelle+radiusNP))));
+        }
+
+        if (Math.ceil(n) - n <= 0.01){
+            n = Math.ceil(n)
+        } else {
+            n = Math.floor(n)
         }
 
         //Coordenadas de origen de la micela
@@ -437,14 +420,14 @@ function draw(radiusNP, radiusMicelle, cantNP, espacio, zoom, xDrag, yDrag) {
 
         //Dibujando la micela
         ctx.arc(x, bigY, radiusMicelle, 0, 2*Math.PI, false);
-        const widthDiameter = (x+radiusMicelle)-(x-radiusMicelle);
-        const diameterX = (x-radiusMicelle);
-        ctx.strokeRect(diameterX, bigY, widthDiameter, 0.1);
+        // const widthDiameter = (x+radiusMicelle)-(x-radiusMicelle);
+        // const diameterX = (x-radiusMicelle);
+        // ctx.strokeRect(diameterX, bigY, widthDiameter, 0.1);
 
         ctx.lineWidth = 1;
         ctx.strokeStyle = '#000';
-        var numberFont = radiusMicelle*0.4;
-        var fontSize = numberFont+"px Arial";
+        let numberFont = radiusMicelle*0.4;
+        let fontSize = numberFont+"px Arial";
         ctx.font = fontSize;
         ctx.fillText(radiusMicelleOrig+' nm', x-(numberFont*1.5),bigY+(numberFont/2));
         ctx.stroke();
@@ -460,8 +443,8 @@ function draw(radiusNP, radiusMicelle, cantNP, espacio, zoom, xDrag, yDrag) {
             ctx.lineWidth = 1;
             ctx.strokeStyle = '#000';
 
-            var numberFont = radiusNP*0.4;
-            var fontSize = numberFont+"px Arial";
+            numberFont = radiusNP*0.4;
+            fontSize = numberFont+"px Arial";
             ctx.font = fontSize;
             ctx.fillStyle = '#000';
             ctx.fillText(radiusNPOrig+' nm', xNP-(numberFont*1.4), yNP+(numberFont/2));
@@ -542,30 +525,32 @@ function parameters(){
 function tooltipPosition() {
     const tooltip = $('#scale-tooltip');
     var right = $('#div-escala-right');
-    const thisPosition = right.position();
+    const rightPosition = right.position();
     const tooltipWidth = tooltip.width();
     const tooltipHeight = tooltip.height();
-    const div = $('#div-escala');
-    const scalePosition = div.position();
+    const scalePosition = $('#div-escala').position();
     updateScale();
 
-    var left = thisPosition.left+scalePosition.left-(tooltipWidth/2)+((right.width())/2);
+    var left = rightPosition.left+scalePosition.left-(tooltipWidth/2)+((right.width())/2);
     tooltip.css({
-        top:scalePosition.top-(tooltipWidth),
+        top:scalePosition.top-(tooltipHeight)-(tooltipHeight/2)-10,
         left: left
     });
+
 
     $('#scale-micelle').focus();
     tooltip.show();
 }
+
+
 function updateScale() {
     const scaleWidth = $('#div-escala').width();
     var scaleEquivalence = $('#scale-equivalence');
-
     const scaleNm = parseFloat(scaleEquivalence.attr('data-nm'));
     const scalePx = parseFloat(scaleEquivalence.attr('data-pixels'));
     const ratio = scaleNm/scalePx;
-    const inputValue = Math.round(scaleWidth*ratio);
+    const inputValue = Math.round(scaleWidth*ratio) || "Set scale first";
+    console.log(inputValue)
+    $('#scale-length-display').text(inputValue)
 
-    $('#value-scale').val(inputValue);
 }

@@ -1,5 +1,6 @@
 body{
     background: #eeeeee;
+    font-family: "Segoe UI", serif;
 }
 hr{
     border: none;
@@ -111,8 +112,17 @@ h1 {
     border-radius: 5px;
     cursor: pointer;
 }
-#div-reset{
+#div-reset, #temporary-actions{
     margin-top: 10px;
+    overflow: auto;
+}
+#div-reset {
+    float: left;
+}
+
+#temporary-actions {
+    float: right;
+    margin-left: 5px;
 }
 .float-left{
     float: left;
@@ -146,8 +156,10 @@ h1 {
 #scale-tooltip{
     background: #0009;
     padding: 10px;
-    width: 20%;
+    width: auto;
     position: absolute;
+    text-align: center;
+    font-size: 20pt;
     z-index: 10;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -155,17 +167,17 @@ h1 {
     color: #ffffff;
     display: none;
 }
-#scale-tooltip:after{
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid #0009;
-    position: absolute;
-    content: ' ';
-    left: 42%;
-    top: 100%;
-}
+/*#scale-tooltip:after{*/
+/*    width: 0;*/
+/*    height: 0;*/
+/*    border-left: 10px solid transparent;*/
+/*    border-right: 10px solid transparent;*/
+/*    border-top: 10px solid #0009;*/
+/*    position: absolute;*/
+/*    content: ' ';*/
+/*    left: 38%;*/
+/*    top: 100%;*/
+/*}*/
 #scale-tooltip input[type=number]{
     padding: 10px;
     max-width: 60%;
@@ -175,12 +187,18 @@ h1 {
     border-top: solid 1px #ffffff;
     margin-top: 5px;
 }
-#value-scale{
-    border: none;
-    color: #ffffff;
-    background: transparent;
+.number-input{
+    padding: 10px;
+    border: solid 1px #dddddd;
+    border-radius: 5px;
+    width: 80px;
+    margin-top: 5px;
 }
 .resaltado{
     background-color: rgb(0, 160, 225);
     color: #ffffff;
+}
+
+.hidden {
+    display: none;
 }
