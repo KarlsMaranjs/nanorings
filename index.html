@@ -14,14 +14,13 @@
 <div id="canvas-container">
     <div id="scale-tooltip">
         <div id="input-scale-value">
-            <input type="number" value="0" id="value-scale">
+            <span id="scale-length-display">0</span>
         </div>
+
 <!--        <div id="autoscale-micelle">-->
 <!--            <label for="scale-micelle">Scale micelle</label>-->
 <!--            <input type="checkbox" id="scale-micelle">-->
-<!--            <input type="hidden" id="scale-equivalence" data-pixels="0" data-nm="0">-->
 <!--        </div>-->
-        <input type="hidden" id="scale-value" value="0">
     </div>
     <canvas id="background-canvas" class="canvas" width="600" height="600"></canvas>
     <canvas id="nanoanillo" class="canvas" width="600" height="600"></canvas>
@@ -30,18 +29,18 @@
 <section id="controles">
     <div id="controles-container">
         <label for="radiusNP" class="label">Nanoparticle diameter</label>
-        <input type="number" step="1" min="1"  value="50" id="radiusNP" class="radio">
+        <input type="number" step="1" min="1"  value="50" id="radiusNP" class="radio number-input">
 
         <label for="radiusMicelle" class="label">Micelle diameter</label>
-        <input type="number" step="1" min="1" value="200" id="radiusMicelle" class="radio">
+        <input type="number" step="1" min="1" value="200" id="radiusMicelle" class="radio number-input">
 
         <label for="cantNP" class="label">Amount of nanoparticles</label>
-        <input id="cantNP" class="range" type="range" min="3" max="100" value="2" step="1">
+        <input id="cantNP" class="range" type="range" min="3" max="200" value="2" step="1">
 
         <label for="zoom" class="label">Zoom</label>
         <input id="zoom" class="range" type="range" min="0.1" max="10" value="1" step="any">
 
-        <label for="espacio" class="label">Ligand size (nm)</label>
+        <label for="espacio" class="label">Ligand length (nm)</label>
         <input id="espacio" class="range" type="range" min="0" max="10" value="0" step="0.1">
         <input type="hidden" id="lastActive" value="radiusNP">
     </div>
@@ -78,6 +77,13 @@
             <button id="insertar-escala" class="tab-button float-left">Scale bar</button>
             <button id="reset-coords" class="tab-button float-left">Recenter</button>
             <button id="reset-canvas" class="tab-button float-left">Reset</button>
+        </div>
+        <div id="temporary-actions">
+            <div id="set-scale-container" class="hidden">
+                <input type="number" id="scale-value" value="50" step="1" min="1" class="number-input">
+                <button id="set-scale-button" class="tab-button">Set scale</button>
+                <input type="hidden" id="scale-equivalence" data-pixels="0" data-nm="0">
+            </div>
         </div>
     </div>
     <div id="load-image">
