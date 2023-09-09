@@ -4,4 +4,4 @@ A simple, visual tool to determine the amount of circumferences that can be plac
 This is still a work in progress feel free to open a new issue or PR. 
 
 # Live Demo
-[https://karlsmaranjs.github.io/nanorings/]
+https://karlsmaranjs.github.io/nanorings/
