@@ -1,50 +1,13 @@
-//R = 160
-//r = 3
-//ESTE CODIGO ESTA TOCAO TOCAO!!!!!!!!
-// $(document).ready(function () {
-//    const canvas = document.getElementById('nanoanillo');
-//    if(canvas.getContext){
-//        const ctx = canvas.getContext('2d');
-//        ctx.beginPath();
-//        var radiusMicelle = 160;
-//        var radiusNP =30;
-//        var n = Math.PI/(Math.asin(radiusNP/(radiusMicelle+radiusNP)));
-//
-//        var x = 250;
-//        var bigY = 350;
-//        ctx.arc(x, bigY, radiusMicelle, 0, 2*Math.PI, false);
-//        var lineWidth = 2;
-//        ctx.lineWidth = lineWidth;
-//        ctx.strokeStyle = '#000';
-//        ctx.stroke();
-//
-//        var newX = x;
-//        var y = bigY-radiusMicelle-radiusNP-lineWidth;
-//
-//        for (var i = 0; i < n; i++) {
-//            var angle = (i/(n/2))*Math.PI;
-//            var j = radiusNP*Math.cos(angle) + x;
-//            var k = radiusNP*Math.sin(angle) + bigY
-//            ctx.beginPath();
-//            ctx.arc(j, k, radiusNP, 0, 2*Math.PI, false);
-//            ctx.lineWidth = 1;
-//            ctx.strokeStyle = '#f00';
-//            ctx.stroke();
-//        }
-//
-//    }
-// });
-
 $(document).ready(function () {
 
-    var start,
+    let start,
         end,
         difference,
         actual,
         originalWidth
     ;
-    var down = false;
-    var parametros = parameters();
+    let down = false;
+    let parametros = parameters();
     draw(
         parametros.radiusNP,
         parametros.radiusMicelle,
@@ -65,9 +28,9 @@ $(document).ready(function () {
     $(document).on('mousemove',  function (e) {
         actual = e.pageX;
         difference = actual - start;
-        var div = $('#div-escala');
+        let div = $('#div-escala');
         if(down === true){
-            var width = originalWidth+difference;
+            let width = originalWidth+difference;
             div.css({
                 width: width,
                 opacity:0.5
@@ -82,7 +45,7 @@ $(document).ready(function () {
 
     });
     $(document).on('mouseout', '#div-escala-right', function (e) {
-        var scaleTooltip = $('#scale-tooltip');
+        let scaleTooltip = $('#scale-tooltip');
         const ev = e;
         scaleTooltip.hide();
 
@@ -100,14 +63,14 @@ $(document).ready(function () {
         }, 500)
     });
     $(document).on('change', '.radio', function () {
-     var radiusNP = $('#radiusNP').val();
-     var radiusMicelle = $('#radiusMicelle').val();
+     let radiusNP = $('#radiusNP').val();
+     let radiusMicelle = $('#radiusMicelle').val();
 
      clearCanvas('nanoanillo');
 
      if(radiusNP>0 && radiusMicelle>0){
-         var parametros = parameters();
-         var numero = draw(
+         let parametros = parameters();
+         let numero = draw(
              parametros.radiusNP,
              parametros.radiusMicelle,
              0,
@@ -124,13 +87,13 @@ $(document).ready(function () {
 
  })
     $(document).on('input', '#cantNP', function () {
-        var cantNP = $(this).val();
+        let cantNP = $(this).val();
         if (cantNP >=3){
             clearCanvas('nanoanillo');
 
-            var parametros = parameters();
+            let parametros = parameters();
 
-            var fn = draw(
+            let fn = draw(
                 0,
                 parametros.radiusMicelle,
                 $(this).val(),
@@ -145,7 +108,7 @@ $(document).ready(function () {
     })
     $(document).on('input', '#zoom, #espacio', function () {
         clearCanvas('nanoanillo');
-        var parametros = parameters();
+        let parametros = parameters();
         const func = draw(
             parametros.radiusNP,
             parametros.radiusMicelle,
@@ -167,7 +130,7 @@ $(document).ready(function () {
         tooltipPosition();
     })
     $(document).on('keyup', '#value-scale', function () {
-        var scaleEquiv = $('#scale-equivalence');
+        let scaleEquiv = $('#scale-equivalence');
         scaleEquiv.attr('data-nm', $(this).val());
         scaleEquiv.attr('data-pixels', $('#div-escala').width())
     })
@@ -243,7 +206,7 @@ $(document).ready(function () {
 
     // $(document).on('change', '#scale-micelle', function (e) {
     //     if($(this).prop('checked')===true){
-    //         var parametros = parameters();
+    //         let parametros = parameters();
     //         clearCanvas('nanoanillo');
     //         const radiusMicelle = parseInt($('#value-scale').val());
     //
@@ -258,9 +221,9 @@ $(document).ready(function () {
 
 //Drag the canvas
 $(document).ready(function () {
-    var isDragging = false;
-    var background = $('#nanoanillo');
-    var xTop,
+    let isDragging = false;
+    let background = $('#nanoanillo');
+    let xTop,
         xLeft,
         xWidth,
         xHeight
@@ -282,8 +245,8 @@ $(document).ready(function () {
         })
     });
     $(document).on('mousemove', function (e) {
-        var dragX = e.pageX-xLeft-(xWidth/2);
-        var dragY = e.pageY-xTop-(xHeight/2);
+        let dragX = e.pageX-xLeft-(xWidth/2);
+        let dragY = e.pageY-xTop-(xHeight/2);
 
         if (isDragging === true) {
             background.css({
@@ -293,7 +256,7 @@ $(document).ready(function () {
                 cursor:'grab'
             });
             clearCanvas('nanoanillo');
-            var parametros = parameters();
+            let parametros = parameters();
             console.log(parameters());
             draw(
                 parametros.radiusNP,
@@ -313,13 +276,13 @@ $(document).ready(function () {
 
 //Drag the scale bar
 $(document).ready(function () {
-    var isDragging = false;
-    var escala = $('#div-escala');
-    var yTop,
+    let isDragging = false;
+    let escala = $('#div-escala');
+    let yTop,
         xLeft;
 
     $(document).on('mousedown', '#div-escala-dragger', function (e) {
-        var div = $('#div-escala');
+        let div = $('#div-escala');
 
         yTop = e.pageY-div.position().top;
         xLeft = e.pageX-div.position().left;
@@ -327,8 +290,8 @@ $(document).ready(function () {
         isDragging = true;
     });
     $(document).on('mousemove', function (e) {
-        var dragX = e.pageX;
-        var dragY = e.pageY;
+        let dragX = e.pageX;
+        let dragY = e.pageY;
 
         if (isDragging === true) {
             $('#div-escala').css({
@@ -356,12 +319,9 @@ function draw(radiusNP, radiusMicelle, cantNP, espacio, zoom, xDrag, yDrag) {
     //Seleccionar el canvas
     const canvas = document.getElementById('nanoanillo');
 
-    //Seleccionando el canvas con jQuery
-    const lienzo = $('#nanoanillo');
-
     //Ancho y  alto del canvas
-    var widthLienzo = lienzo.width();
-    var heigthLienzo = lienzo.height();
+    const widthLienzo = canvas.width;
+    const heigthLienzo = canvas.height;
 
     if(!xDrag){
         xDrag = 0;
@@ -369,32 +329,31 @@ function draw(radiusNP, radiusMicelle, cantNP, espacio, zoom, xDrag, yDrag) {
     if(!yDrag){
         yDrag = 0;
     }
+
     if(canvas.getContext){
 
         const ctx = canvas.getContext('2d');
         ctx.beginPath();
 
         //Diametro de la micela
-        var radiusMicelleOrig = parseFloat(radiusMicelle);
+        let radiusMicelleOrig = parseFloat(radiusMicelle);
 
         //Diametro de la NP
-        var radiusNPOrig =parseFloat(radiusNP);
+        let radiusNPOrig =parseFloat(radiusNP);
 
         //Parseando los diametros
         radiusMicelle = parseFloat(radiusMicelle);
         radiusNP =parseFloat(radiusNP);
 
-        //Cantidad de NPs
-        let n;
+        //Cantidad de NPs a dibujar
+        let n = 0;
 
         //Si se fija la cantidad de nanoparticulas deseadas
-        if(cantNP>=3)
-        {
+        if(cantNP>=3)  {
             n = parseInt(cantNP);
             radiusNP = ((radiusMicelle*Math.sin((Math.PI/n)))/(1-Math.sin((Math.PI/n))));
             radiusNPOrig = Math.round(radiusNP);
-        }
-        else {
+        }  else {
             //Calculando la cantidad de nanoparticulas en funcion del diametro de la micela y del diametro de las NP
             radiusNP = radiusNP+(parseFloat(espacio));
             n = (Math.PI/(Math.asin(radiusNP/(radiusMicelle+radiusNP))));
@@ -407,11 +366,11 @@ function draw(radiusNP, radiusMicelle, cantNP, espacio, zoom, xDrag, yDrag) {
         }
 
         //Coordenadas de origen de la micela
-        var x = (widthLienzo/2)+ xDrag;
-        var bigY = (heigthLienzo/2)+yDrag;
+        let x = (widthLienzo/2)+ xDrag;
+        let bigY = (heigthLienzo/2)+yDrag;
 
         //Factor para hacer zoom
-        var zoomFactor = parseFloat(zoom);
+        let zoomFactor = parseFloat(zoom);
         if(zoomFactor<=0){
             zoomFactor = 0.1
         }
@@ -420,9 +379,6 @@ function draw(radiusNP, radiusMicelle, cantNP, espacio, zoom, xDrag, yDrag) {
 
         //Dibujando la micela
         ctx.arc(x, bigY, radiusMicelle, 0, 2*Math.PI, false);
-        // const widthDiameter = (x+radiusMicelle)-(x-radiusMicelle);
-        // const diameterX = (x-radiusMicelle);
-        // ctx.strokeRect(diameterX, bigY, widthDiameter, 0.1);
 
         ctx.lineWidth = 1;
         ctx.strokeStyle = '#000';
@@ -433,11 +389,11 @@ function draw(radiusNP, radiusMicelle, cantNP, espacio, zoom, xDrag, yDrag) {
         ctx.stroke();
 
         //Dibujando las nanoparticulas
-        for (var i = 0; i < n; i++) {
+        for (let i = 0; i < n; i++) {
             //Calculando las coordenadas de cada nanoparticula alrededor de la micela
-            var angle = ((i/(n/2))*Math.PI);
-            var xNP = ((radiusMicelle+radiusNP)*Math.cos(angle)) + x;
-            var yNP = ((radiusMicelle+radiusNP)*Math.sin(angle)) + bigY;
+            let angle = ((i/(n/2))*Math.PI);
+            let xNP = ((radiusMicelle+radiusNP)*Math.cos(angle)) + x;
+            let yNP = ((radiusMicelle+radiusNP)*Math.sin(angle)) + bigY;
             ctx.beginPath();
             ctx.arc(xNP, yNP, radiusNP-(parseFloat(espacio)*2), 0, 2*Math.PI, false);
             ctx.lineWidth = 1;
@@ -478,7 +434,7 @@ function clearCanvas(id) {
     return true;
 }
 function loadImage(x, y) {
-    var base_image = new Image();
+    let base_image = new Image();
     base_image.src = 'imagen.png';
     base_image.onload = function () {
         const canvas = document.getElementById('background-canvas');
@@ -486,11 +442,12 @@ function loadImage(x, y) {
         ctx.drawImage(base_image, 0, 0, 600, 600)
     }
 }
+
 function fileInput(input) {
     if(input.files && input.files[0]){
         if(clearCanvas('background-canvas')){
-            var reader = new FileReader();
-            var image = new Image();
+            let reader = new FileReader();
+            let image = new Image();
 
             const canvas = document.getElementById('background-canvas');
             const ctx = canvas.getContext('2d');
@@ -524,14 +481,14 @@ function parameters(){
 }
 function tooltipPosition() {
     const tooltip = $('#scale-tooltip');
-    var right = $('#div-escala-right');
+    let right = $('#div-escala-right');
     const rightPosition = right.position();
     const tooltipWidth = tooltip.width();
     const tooltipHeight = tooltip.height();
     const scalePosition = $('#div-escala').position();
     updateScale();
 
-    var left = rightPosition.left+scalePosition.left-(tooltipWidth/2)+((right.width())/2);
+    let left = rightPosition.left+scalePosition.left-(tooltipWidth/2)+((right.width())/2);
     tooltip.css({
         top:scalePosition.top-(tooltipHeight)-(tooltipHeight/2)-10,
         left: left
@@ -545,7 +502,7 @@ function tooltipPosition() {
 
 function updateScale() {
     const scaleWidth = $('#div-escala').width();
-    var scaleEquivalence = $('#scale-equivalence');
+    let scaleEquivalence = $('#scale-equivalence');
     const scaleNm = parseFloat(scaleEquivalence.attr('data-nm'));
     const scalePx = parseFloat(scaleEquivalence.attr('data-pixels'));
     const ratio = scaleNm/scalePx;
