@@ -203,19 +203,7 @@ $(document).ready(function () {
         scaleEquiv.attr('data-nm', $('#scale-value').val());
         scaleEquiv.attr('data-pixels', $('#div-escala').width())
     })
-
-    // $(document).on('change', '#scale-micelle', function (e) {
-    //     if($(this).prop('checked')===true){
-    //         let parametros = parameters();
-    //         clearCanvas('nanoanillo');
-    //         const radiusMicelle = parseInt($('#value-scale').val());
-    //
-    //         draw(parametros.radiusNP, radiusMicelle, 0, parametros.espacio, parametros.zoom, parametros.xDrag, parametros.yDrag)
-    //     }
-    //     else {
-    //         clearCanvas('nanoanillo');
-    //     }
-    // })
+    
 });
 
 
